@@ -9,7 +9,6 @@
     <welcome-file>default.jsp</welcome-file>
     <welcome-file>default.htm</welcome-file>
   </welcome-file-list>
-  
   <servlet>
     <description></description>
     <display-name>ListController</display-name>
@@ -20,7 +19,6 @@
     <servlet-name>ListController</servlet-name>
     <url-pattern>/mvcboard/list.do</url-pattern>
   </servlet-mapping>
-  
   <context-param>
     <param-name>MySQLDriver</param-name>
     <param-value>com.mysql.cj.jdbc.Driver</param-value>
@@ -37,7 +35,6 @@
     <param-name>MySQLPwd</param-name>
     <param-value>pass123#</param-value>
   </context-param>
-  
   <filter>
     <filter-name>SetCharacterEncoding</filter-name>
     <filter-class>org.apache.catalina.filters.SetCharacterEncodingFilter</filter-class>
@@ -50,19 +47,28 @@
     <filter-name>SetCharacterEncoding</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
-  
   <servlet>
     <description></description>
     <display-name>WriteController</display-name>
     <servlet-name>WriteController</servlet-name>
     <servlet-class>kr.co.kosta.model2.WriteController</servlet-class>
     <multipart-config>
-    	<max-file-size>1048576</max-file-size>			<!-- 개별 파일 최대 크기 : 1MB -->
-    	<max-request-size>10485760</max-request-size>   <!-- 전체파일 최대 크기 : 10MB -->
+      <max-file-size>1048576</max-file-size>			<!-- 개별 파일 최대 크기 : 1MB -->
+      <max-request-size>10485760</max-request-size>     <!-- 전체 파일 최대 크기 : 10MB -->
     </multipart-config>
   </servlet>
   <servlet-mapping>
     <servlet-name>WriteController</servlet-name>
     <url-pattern>/mvcboard/write.do</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ViewController</display-name>
+    <servlet-name>ViewController</servlet-name>
+    <servlet-class>kr.co.kosta.model2.ViewController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ViewController</servlet-name>
+    <url-pattern>/ViewController</url-pattern>
   </servlet-mapping>
 </web-app>

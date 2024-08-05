@@ -50,4 +50,20 @@ public class JSFunction {
 	
 		}
 	}  
+	
+	public static void alertBack(HttpServletResponse response, String msg) {
+		try {
+			response.setContentType("text/html);charset=UTF-8");
+			PrintWriter writer = response.getWriter();
+			String script = "<script>" 
+					+ "alert(`" + msg + "`);"
+					+ "history.back(); "
+					+ "</script>";
+			writer.println(script);
+			
+		} catch (Exception e) {
+	
+		}
+	} 
+
 }
