@@ -195,4 +195,52 @@ public class MVCBoardDAO extends DBConnPoolTest {
 		
 		return isTrue;
 	}
+	
+	// 게시글 수정하기 (파일 업로드 포함)
+	public int updatePost(MVCBoardDTO dto) {
+		int result = 0;
+		
+		String query = "UPDATE mvcboard "
+				+ "SET name=?, title=?, content=?, ofile=?, sfile=? "
+				+ "WHERE idx=? and pass=?";
+		
+		
+		try {
+			pstmt = con.prepareStatement(query);
+			pstmt.setString(1, dto.getName());
+			pstmt.setString(2, dto.getTitle());
+			pstmt.setString(3, dto.getContent());
+			pstmt.setString(4, dto.getOfile());
+			pstmt.setString(5, dto.getSfile());
+			pstmt.setString(6, dto.getIdx());
+			pstmt.setString(7, dto.getPass());
+			
+			// 쿼리문 실행
+			result = pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			System.out.println("게시물 수정 중 예외 발생");
+			e.printStackTrace();
+		}
+				
+		return result;
+	}
+
+	public int deletePost(String idx) {
+		int result = 0;
+		
+		String query = "DELETE FROM mvcboard WHERE idx=?";
+		
+		try {
+			pstmt = con.prepareStatement(query);
+			pstmt.setString(1, idx);			
+			result = pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			System.out.println("게시물 삭제 중 예외 발생");
+			e.printStackTrace();
+		}
+				
+		return result;
+	}
 }

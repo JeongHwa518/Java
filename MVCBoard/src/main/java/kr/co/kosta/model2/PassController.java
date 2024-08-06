@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import kr.co.kosta.common.FileUtil;
 import kr.co.kosta.util.JSFunction;
 
 @WebServlet("/mvcboard/pass.do")
@@ -32,12 +33,23 @@ public class PassController extends HttpServlet {
 		dao.close();
 		
 		if (confirmed) {
-			if(mode.equals("edit")) {	// 수정모드
+			if(mode.equals("edit")) {  // 수정모드
 				HttpSession session = request.getSession();
 				session.setAttribute("pass", pass);
 				response.sendRedirect("../mvcboard/edit.do?idx=" + idx);
 				
-			} else if (mode.equals("delete")) {
+			} else if (mode.equals("delete")) {	 		// 삭제모드
+				dao = new MVCBoardDAO();		 		//위에서 dao.close 했으므로 다시 생성
+				MVCBoardDTO dto = dao.selectView(idx);
+				int result = dao.deletePost(idx);		// 게시물 삭제
+				dao.close();
+				
+				if(result == 1) {
+					String saveFileName = dto.getSfile();
+					FileUtil.deleteFile(request, "/uploads", saveFileName);
+				}
+				
+				JSFunction.alertLocation(response, "삭제되었습니다", "../mvcboard/list.do");
 				
 			}
 		} else {

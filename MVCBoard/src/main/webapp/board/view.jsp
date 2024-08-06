@@ -51,9 +51,9 @@
 		</tr>
 		
 		<tr>
-			<td colspan="4" align="center">
+			<td colspan="4" align="center">							      <!-- 삭제, 수정이 같이 적용돼서구별하기위해 각각 부여 -->
 				<button type="button" onclick="location.href='../mvcboard/pass.do?mode=edit&idx=${param.idx }'">수정하기</button>
-				<button type="button" onclick="">삭제하기</button>
+				<button type="button" onclick="location.href='../mvcboard/pass.do?mode=delete&idx=${param.idx }'">삭제하기</button>
 				<button type="button" onclick="location.href='../mvcboard/list.do'">목록가기</button>
 			</td>
 		</tr>

@@ -8,6 +8,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import kr.co.kosta.common.FileUtil;
+import kr.co.kosta.util.JSFunction;
 
 @WebServlet("/mvcboard/edit.do")
 @MultipartConfig(
@@ -30,5 +33,68 @@ public class EditController extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
 		
+		// 물리적 경로 확인
+		String saveDirectory = request.getServletContext().getRealPath("/uploads");
+		
+		// 파일 업로드
+		String originalFileName = "";
+		
+		try {
+			originalFileName = FileUtil.uploadFile(request, saveDirectory);
+		} catch (Exception e) {
+			JSFunction.alertBack(response, "파일 업로드 오류입니다.");
+			return;
+		}
+		
+		// 수정 내용 반영
+		String idx = request.getParameter("idx");			// DAO로 넘겨야 함
+		String prevOfile = request.getParameter("prevOfile");
+		String prevSfile = request.getParameter("prevSfile");
+		
+		String name = request.getParameter("name");
+		String title = request.getParameter("title");
+		String content = request.getParameter("content");
+		
+		HttpSession session = request.getSession();			// session에 저장된 비밀번호 가져오기
+		String pass = (String)session.getAttribute("pass");
+		
+		// DTO 저장
+		MVCBoardDTO dto = new MVCBoardDTO();
+		dto.setIdx(idx);
+		dto.setName(name);
+		dto.setTitle(title);
+		dto.setContent(content);
+		dto.setPass(pass);
+		
+		// 원본 파일 이름과 저장되는 파일 이름 설정
+		if (originalFileName != "") {	// "" == null
+			// 파일명 변경
+			String savedFileName = FileUtil.renameFile(saveDirectory, originalFileName);
+					
+			dto.setOfile(originalFileName);		// 원 파일 이름
+			dto.setSfile(savedFileName);		// 서버에 저장된 파일 이름
+			
+			// 기존 파일 삭제
+			FileUtil.deleteFile(request, "/uploads", prevSfile);
+		}
+		else {
+			// 첨부파일이 없으면 기존 이름 유지
+			dto.setOfile(prevOfile);
+			dto.setSfile(prevSfile);
+		}
+		
+		// DB 수정 내용 반영
+		MVCBoardDAO dao = new MVCBoardDAO();
+		int result = dao.updatePost(dto);
+		dao.close();
+		
+		if(result == 1) {
+			// 수정 성공
+			session.removeAttribute("pass");
+			response.sendRedirect("../mvcboard/view.do?idx=" + idx);	//값에 idx 넣음
+		} else {
+			// 수정 실패
+			JSFunction.alertLocation(response, "비밀번호 검증을 다시 진행해주세요.", "../mvcboard/view.do?idx=" + idx);
+		}
 	}
 }

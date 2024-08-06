@@ -24,7 +24,7 @@ public class FileUtil {
 		Part part = request.getPart("ofile");
 		
 		// Part 객체의 헤더값 중 Content-Disposition 값을 저장
-		String partHeader = part.getHeader("Content-Disposition");
+		String partHeader = part.getHeader("content-disposition");
 		System.out.println("partHeader = " + partHeader);  //form-data; name="myFile"; filename="foo.txt"
 		
 		// 헤더값에서 파일명 잘라내기
@@ -106,5 +106,12 @@ public class FileUtil {
 			System.out.println("예외가 발생했습니다.");
 			e.printStackTrace();
 		}	
+	}
+
+	public static void deleteFile(HttpServletRequest request, String directory, String filename) {
+		String sDirectory = request.getServletContext().getRealPath(directory);
+		File file = new File(sDirectory + File.separator + filename); 		// separator 파일사이 구분슬래시
+		if (file.exists())
+			file.delete();	
 	}
 }
